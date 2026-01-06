@@ -1,5 +1,6 @@
 import { useTheme } from "../context/ThemeContext";
 import { CloseIcon, MetamaskIcon, MulticoynIcon } from "./icons";
+import { useAccount } from "wagmi";
 
 interface NFTData {
   id: string;
@@ -22,6 +23,7 @@ export function NFTDetailSidebar({
   onPayWithMulticoyn,
 }: NFTDetailSidebarProps) {
   const { theme } = useTheme();
+  const { isConnected } = useAccount();
 
   if (!nft) return null;
 
@@ -36,7 +38,6 @@ export function NFTDetailSidebar({
         }
       `}
     >
-      {/* Header */}
       <div className="p-4 flex items-center justify-between border-b border-border">
         <h2
           className={`
@@ -61,9 +62,7 @@ export function NFTDetailSidebar({
         </button>
       </div>
 
-      {/* Content */}
       <div className="flex-1 overflow-y-auto p-4">
-        {/* NFT Image */}
         <div
           className={`
             w-full aspect-square rounded-2xl flex items-center justify-center
@@ -77,7 +76,6 @@ export function NFTDetailSidebar({
           />
         </div>
 
-        {/* NFT Info */}
         <div className="mt-4">
           <h3
             className={`
@@ -107,7 +105,6 @@ export function NFTDetailSidebar({
             </p>
           </div>
 
-          {/* Additional Details */}
           <div
             className={`
               mt-6 p-4 rounded-xl
@@ -154,26 +151,29 @@ export function NFTDetailSidebar({
         </div>
       </div>
 
-      {/* Payment Buttons */}
       <div className="p-4 border-t border-border space-y-3">
-        <button
-          onClick={onPayWithMetamask}
-          className={`
-            w-full cursor-pointer flex items-center justify-center gap-3 px-4 py-3 rounded-xl font-medium transition-all
-            bg-[#F6851B] hover:bg-[#E2761B] text-white
-          `}
-        >
-          <MetamaskIcon className="w-6 h-6" />
-          Pay with Metamask
-        </button>
+        {isConnected && (
+          <>
+            <button
+              onClick={onPayWithMetamask}
+              className={`
+                w-full cursor-pointer flex items-center justify-center gap-3 px-4 py-3 rounded-xl font-medium transition-all
+                bg-[#F6851B] hover:bg-[#E2761B] text-white
+              `}
+            >
+              <MetamaskIcon className="w-6 h-6" />
+              Pay with Metamask
+            </button>
 
-        <button
-          onClick={onPayWithMulticoyn}
-          className="w-full cursor-pointer flex items-center justify-center gap-3 px-4 py-3 rounded-xl font-medium transition-all bg-linear-to-r from-gradient-1 to-gradient-2 hover:opacity-90 text-white"
-        >
-          <MulticoynIcon className="w-6 h-6" />
-          Pay with Multicoyn
-        </button>
+            <button
+              onClick={onPayWithMulticoyn}
+              className="w-full cursor-pointer flex items-center justify-center gap-3 px-4 py-3 rounded-xl font-medium transition-all bg-linear-to-r from-gradient-1 to-gradient-2 hover:opacity-90 text-white"
+            >
+              <MulticoynIcon className="w-6 h-6" />
+              Pay with Multicoyn
+            </button>
+          </>
+        )}
       </div>
     </aside>
   );
