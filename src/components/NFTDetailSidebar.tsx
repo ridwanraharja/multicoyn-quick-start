@@ -31,6 +31,7 @@ export function NFTDetailSidebar({
     <aside
       className={`
         w-[360px] h-screen flex flex-col border-l
+        animate-slide-in-right
         ${
           theme === "dark"
             ? "bg-dark-2 border-border"
