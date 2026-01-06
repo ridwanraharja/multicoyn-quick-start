@@ -1,6 +1,7 @@
 import { useTheme } from "../context/ThemeContext";
 import { NotificationIcon } from "./icons";
 import { SearchBar } from "./SearchBar";
+import { CustomConnectButton } from "./CustomConnectButton";
 
 interface HeaderProps {
   searchValue: string;
@@ -29,13 +30,7 @@ export function Header({ searchValue, onSearchChange }: HeaderProps) {
           {/* <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" /> */}
         </button>
 
-        <div className="w-8 h-8 rounded-full overflow-hidden bg-linear-to-br from-primary to-secondary">
-          <img
-            src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-            alt="User avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
+        <CustomConnectButton />
       </div>
     </header>
   );
