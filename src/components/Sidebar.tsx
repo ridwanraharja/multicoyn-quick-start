@@ -1,11 +1,5 @@
 import { useTheme } from "../context/ThemeContext";
-import {
-  DiscoverIcon,
-  TransactionIcon,
-  MoonIcon,
-  SunIcon,
-  MenuIcon,
-} from "./icons";
+import { DiscoverIcon, MoonIcon, SunIcon, MenuIcon } from "./icons";
 
 interface NavItem {
   id: string;
@@ -15,7 +9,6 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { id: "discover", label: "Discover", icon: DiscoverIcon },
-  { id: "transaction", label: "Transaction", icon: TransactionIcon },
 ];
 
 interface SidebarProps {

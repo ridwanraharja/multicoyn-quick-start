@@ -22,7 +22,7 @@ export function NFTCard({
     <div
       onClick={onClick}
       className={`
-        w-[182px] rounded-2xl overflow-hidden cursor-pointer transition-all
+       flex-1 rounded-2xl overflow-hidden cursor-pointer transition-all
         ${
           isSelected
             ? "ring-2 ring-primary ring-offset-2 ring-offset-dark-1"
@@ -30,14 +30,14 @@ export function NFTCard({
         }
         ${
           theme === "dark"
-            ? "bg-dark-3 hover:bg-dark-4"
-            : "bg-light-2 hover:bg-light-3 shadow-sm"
+            ? "bg-dark-1 hover:bg-dark-4"
+            : "bg-light-1 hover:bg-light-3 shadow-sm"
         }
       `}
     >
       <div
         className={`
-        relative w-full h-[124px] flex items-center justify-center
+        relative w-full h-[182px] flex items-center justify-center rounded-2xl
         ${theme === "dark" ? "bg-dark-3" : "bg-light-3"}
       `}
       >

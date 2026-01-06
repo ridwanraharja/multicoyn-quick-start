@@ -106,7 +106,7 @@ function Dashboard() {
     >
       <Sidebar activeNav={activeNav} onNavChange={setActiveNav} />
 
-      <main className="flex-1 flex">
+      <main className="flex-1 flex h-screen overflow-y-auto">
         <div className="flex-1 px-7 py-4">
           <Header searchValue={searchValue} onSearchChange={setSearchValue} />
 
