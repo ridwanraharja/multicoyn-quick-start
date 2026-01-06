@@ -39,7 +39,7 @@ export function CustomConnectButton() {
                   <button
                     onClick={openConnectModal}
                     type="button"
-                    className="px-6 py-2.5 rounded-xl font-semibold transition-all bg-linear-to-r from-gradient-1 to-gradient-2 text-white hover:opacity-90 h-10 leading-[1]"
+                    className="cursor-pointer px-6 py-2.5 rounded-xl font-semibold transition-all bg-linear-to-r from-gradient-1 to-gradient-2 text-white hover:opacity-90 h-10 leading-[1]"
                   >
                     Connect Wallet
                   </button>
@@ -71,7 +71,7 @@ export function CustomConnectButton() {
                     onClick={openChainModal}
                     type="button"
                     className={`
-                      flex items-center gap-2 px-3 py-2 rounded-xl font-medium transition-all h-10
+                      cursor-pointer flex items-center gap-2 px-3 py-2 rounded-xl font-medium transition-all h-10
                       ${
                         theme === "dark"
                           ? "bg-dark-3 hover:bg-dark-4 text-white"
@@ -102,7 +102,7 @@ export function CustomConnectButton() {
                     onClick={openAccountModal}
                     type="button"
                     className={`
-                      flex items-center gap-3 px-4 py-2 rounded-xl font-medium transition-all h-10
+                      cursor-pointer flex items-center gap-3 px-4 py-2 rounded-xl font-medium transition-all h-10
                       ${
                         theme === "dark"
                           ? "bg-dark-3 hover:bg-dark-4 text-white"
