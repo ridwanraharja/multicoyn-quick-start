@@ -17,7 +17,7 @@ export function Header({ searchValue, onSearchChange }: HeaderProps) {
       <div className="flex items-center gap-4">
         <button
           className={`
-          p-2 rounded-xl transition-colors relative
+          p-2 rounded-xl transition-colors relative cursor-pointer
           ${
             theme === "dark"
               ? "hover:bg-dark-3 text-white-75 hover:text-white"

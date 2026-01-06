@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
-import { Sidebar, Header, CategoryTabs, NFTCard } from "./components";
+import {
+  Sidebar,
+  Header,
+  CategoryTabs,
+  NFTCard,
+  NFTDetailSidebar,
+} from "./components";
 
 // Sample NFT data
 const nftData = [
@@ -95,7 +101,21 @@ function Dashboard() {
   const [activeNav, setActiveNav] = useState("discover");
   const [searchValue, setSearchValue] = useState("");
   const [activeCategory, setActiveCategory] = useState("nft");
-  const [selectedNFT, setSelectedNFT] = useState<string | null>("2");
+  const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
+
+  const selectedNFTData = selectedNFT
+    ? nftData.find((nft) => nft.id === selectedNFT) || null
+    : null;
+
+  const handlePayWithMetamask = () => {
+    console.log("Pay with Metamask", selectedNFTData);
+    // TODO: Implement Metamask payment
+  };
+
+  const handlePayWithMulticoyn = () => {
+    console.log("Pay with Multicoyn", selectedNFTData);
+    // TODO: Implement Multicoyn payment
+  };
 
   return (
     <div
@@ -137,6 +157,14 @@ function Dashboard() {
           </div>
         </div>
       </main>
+      {selectedNFTData && (
+        <NFTDetailSidebar
+          nft={selectedNFTData}
+          onClose={() => setSelectedNFT(null)}
+          onPayWithMetamask={handlePayWithMetamask}
+          onPayWithMulticoyn={handlePayWithMulticoyn}
+        />
+      )}
     </div>
   );
 }

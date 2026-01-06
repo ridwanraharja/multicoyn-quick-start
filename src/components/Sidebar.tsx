@@ -41,7 +41,7 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
         </h1>
         <button
           className={`
-          p-2 rounded-lg transition-colors
+          p-2 rounded-lg transition-colors cursor-pointer
           ${
             theme === "dark"
               ? "hover:bg-dark-3 text-white-75"
@@ -63,7 +63,7 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
                 <button
                   onClick={() => onNavChange(item.id)}
                   className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all
+                    w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all cursor-pointer
                     ${
                       isActive
                         ? "bg-dark-4 text-white"
@@ -86,7 +86,7 @@ export function Sidebar({ activeNav, onNavChange }: SidebarProps) {
         <button
           onClick={toggleTheme}
           className={`
-            w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all
+            w-full cursor-pointer flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium transition-all
             ${
               theme === "dark"
                 ? "bg-dark-3 text-white-75 hover:text-white"

@@ -35,7 +35,7 @@ export function CategoryTabs({
             key={category.id}
             onClick={() => onCategoryChange(category.id)}
             className={`
-              flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all
+              flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer
               ${
                 isActive
                   ? theme === "dark"

@@ -39,7 +39,7 @@ export function SearchBar({ value, onChange, onFilter }: SearchBarProps) {
         <button
           onClick={onFilter}
           className={`
-            px-4 py-3 transition-colors
+            px-4 py-3 transition-colors cursor-pointer
             ${
               theme === "dark"
                 ? "text-primary hover:bg-dark-4"
