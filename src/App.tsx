@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import {
   CategoryTabs,
+  CustomConnectButton,
   Header,
   NFTCard,
   NFTDetailSidebar,
   Sidebar,
 } from "./components";
-import { MenuIcon } from "./components/icons";
+import { MenuIcon, NotificationIcon } from "./components/icons";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { CONTRACTS } from "./contracts/config";
 import {
@@ -175,39 +176,60 @@ function Dashboard() {
 
       <main className="flex-1 flex h-screen overflow-y-auto">
         <div className="flex-1 px-4 sm:px-7 py-4">
-          {/* Mobile Header with Menu Button */}
-          <div className="flex items-center gap-4 lg:hidden mb-4">
-            <button
-              onClick={() => setIsSidebarOpen(true)}
-              className={`
-                p-2.5 rounded-xl transition-all duration-200 cursor-pointer
-                hover:scale-105 active:scale-95
-                ${
-                  theme === "dark"
-                    ? "bg-dark-3 hover:bg-dark-4 text-white"
-                    : "bg-light-3 hover:bg-light-4 text-dark"
-                }
-              `}
-            >
-              <MenuIcon className="w-5 h-5" />
-            </button>
+          {/* Mobile Header with Menu Button, Notification & Wallet */}
+          <div className="flex items-center justify-between lg:hidden mb-4">
             <div className="flex items-center gap-3">
-              <div
+              <button
+                onClick={() => setIsSidebarOpen(true)}
                 className={`
-                w-8 h-8 rounded-lg flex items-center justify-center
-                bg-linear-to-br from-gradient-1 to-gradient-2
-              `}
-              >
-                <span className="text-white font-bold text-sm">M</span>
-              </div>
-              <h1
-                className={`
-                  text-lg font-bold
-                  ${theme === "dark" ? "text-white" : "text-dark"}
+                  p-2.5 rounded-xl transition-all duration-200 cursor-pointer
+                  hover:scale-105 active:scale-95
+                  ${
+                    theme === "dark"
+                      ? "bg-dark-3 hover:bg-dark-4 text-white"
+                      : "bg-light-3 hover:bg-light-4 text-dark"
+                  }
                 `}
               >
-                Market
-              </h1>
+                <MenuIcon className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`
+                    w-8 h-8 rounded-lg flex items-center justify-center
+                    bg-linear-to-br from-gradient-1 to-gradient-2
+                  `}
+                >
+                  <span className="text-white font-bold text-sm">M</span>
+                </div>
+                <h1
+                  className={`
+                    text-lg font-bold hidden sm:block
+                    ${theme === "dark" ? "text-white" : "text-dark"}
+                  `}
+                >
+                  Market
+                </h1>
+              </div>
+            </div>
+
+            {/* Notification & Connect Wallet for Mobile */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                className={`
+                  p-2 rounded-xl transition-all duration-200 relative cursor-pointer
+                  hover:scale-105 active:scale-95
+                  ${
+                    theme === "dark"
+                      ? "hover:bg-dark-3 text-white-75 hover:text-white"
+                      : "hover:bg-light-3 text-gray hover:text-dark"
+                  }
+                `}
+              >
+                <NotificationIcon className="w-5 h-5" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-gradient-1 rounded-full animate-pulse" />
+              </button>
+              <CustomConnectButton />
             </div>
           </div>
 

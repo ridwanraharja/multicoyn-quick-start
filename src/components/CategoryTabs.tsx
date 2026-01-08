@@ -40,14 +40,15 @@ export function CategoryTabs({
               transition-all duration-300 cursor-pointer whitespace-nowrap
               hover:scale-105 active:scale-95
               animate-fade-in-up
+              border
               ${
                 isActive
                   ? theme === "dark"
-                    ? "bg-linear-to-r from-gradient-1/20 to-gradient-2/20 text-white border border-gradient-1 shadow-lg shadow-gradient-1/20"
-                    : "bg-light-2 text-dark border border-gradient-1 shadow-lg shadow-gradient-1/20"
+                    ? "bg-linear-to-r from-gradient-1/20 to-gradient-2/20 text-white border-gradient-1 shadow-lg shadow-gradient-1/20"
+                    : "bg-light-2 text-dark border-gradient-1 shadow-lg shadow-gradient-1/20"
                   : theme === "dark"
-                  ? "bg-dark-3 text-white-75 border border-border hover:border-gradient-1/50 hover:text-white"
-                  : "bg-light-2 text-gray border border-light-4 hover:border-gradient-1/50 hover:text-dark"
+                  ? "bg-dark-3 text-white-75 border-border hover:border-gradient-1 hover:text-white"
+                  : "bg-light-2 text-gray border-light-4 hover:border-gradient-1 hover:text-dark"
               }
             `}
           >
