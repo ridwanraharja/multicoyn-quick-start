@@ -26,7 +26,7 @@ export function CategoryTabs({
   const { theme } = useTheme();
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-1">
+    <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar p-1 ">
       {categories.map((category, index) => {
         const Icon = category.icon;
         const isActive = activeCategory === category.id;
