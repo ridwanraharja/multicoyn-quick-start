@@ -1,23 +1,24 @@
-import { useState, useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAccount } from "wagmi";
-import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import {
-  Sidebar,
-  Header,
   CategoryTabs,
+  Header,
   NFTCard,
   NFTDetailSidebar,
+  Sidebar,
 } from "./components";
+import { MenuIcon } from "./components/icons";
+import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import { CONTRACTS } from "./contracts/config";
 import {
+  useApproveToken,
+  useBuyNFT,
   useGetListing,
   useNFTMetadata,
-  useBuyNFT,
-  useApproveToken,
   useTokenAllowance,
 } from "./hooks/useNFTMarketplace";
-import { decodeMetadataURI, getImageUrl } from "./utils/metadata";
 import { formatPrice } from "./utils/format";
-import { CONTRACTS } from "./contracts/config";
+import { decodeMetadataURI, getImageUrl } from "./utils/metadata";
 
 const NFT_TOKEN_IDS = [1n, 2n, 3n, 4n, 5n, 6n, 7n, 8n, 9n, 10n, 11n, 12n];
 
@@ -57,6 +58,7 @@ function Dashboard() {
   const [activeCategory, setActiveCategory] = useState("nft");
   const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
   const [nftData, setNftData] = useState<NFTData[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Fetch metadata for all NFTs
   const metadataQueries = NFT_TOKEN_IDS.map((tokenId) =>
@@ -163,16 +165,58 @@ function Dashboard() {
       ${theme === "dark" ? "bg-dark-1" : "bg-light-1"}
     `}
     >
-      <Sidebar activeNav={activeNav} onNavChange={setActiveNav} />
+      {/* Left Sidebar */}
+      <Sidebar
+        activeNav={activeNav}
+        onNavChange={setActiveNav}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       <main className="flex-1 flex h-screen overflow-y-auto">
-        <div className="flex-1 px-7 py-4">
+        <div className="flex-1 px-4 sm:px-7 py-4">
+          {/* Mobile Header with Menu Button */}
+          <div className="flex items-center gap-4 lg:hidden mb-4">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className={`
+                p-2.5 rounded-xl transition-all duration-200 cursor-pointer
+                hover:scale-105 active:scale-95
+                ${
+                  theme === "dark"
+                    ? "bg-dark-3 hover:bg-dark-4 text-white"
+                    : "bg-light-3 hover:bg-light-4 text-dark"
+                }
+              `}
+            >
+              <MenuIcon className="w-5 h-5" />
+            </button>
+            <div className="flex items-center gap-3">
+              <div
+                className={`
+                w-8 h-8 rounded-lg flex items-center justify-center
+                bg-linear-to-br from-gradient-1 to-gradient-2
+              `}
+              >
+                <span className="text-white font-bold text-sm">M</span>
+              </div>
+              <h1
+                className={`
+                  text-lg font-bold
+                  ${theme === "dark" ? "text-white" : "text-dark"}
+                `}
+              >
+                Market
+              </h1>
+            </div>
+          </div>
+
           <Header searchValue={searchValue} onSearchChange={setSearchValue} />
 
-          <div className="flex items-center justify-between mt-8 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mt-6 sm:mt-8 mb-4 sm:mb-6 gap-4">
             <h2
               className={`
-              text-2xl font-bold
+              text-xl sm:text-2xl font-bold animate-fade-in-up
               ${theme === "dark" ? "text-white" : "text-dark"}
             `}
             >
@@ -184,7 +228,7 @@ function Dashboard() {
             />
           </div>
 
-          <div className="grid grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 pb-8">
             {nftData.map((nft) => (
               <NFTCard
                 key={nft.id}
@@ -196,6 +240,8 @@ function Dashboard() {
           </div>
         </div>
       </main>
+
+      {/* Right Sidebar - NFT Details */}
       {selectedNFTData && (
         <NFTDetailSidebar
           nft={selectedNFTData}

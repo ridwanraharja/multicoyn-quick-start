@@ -1,5 +1,5 @@
 import { useTheme } from "../context/ThemeContext";
-import { AllIcon, NFTIcon, GamingIcon, ArtsIcon } from "./icons";
+import { AllIcon, ArtsIcon, GamingIcon, NFTIcon } from "./icons";
 
 interface Category {
   id: string;
@@ -26,29 +26,37 @@ export function CategoryTabs({
   const { theme } = useTheme();
 
   return (
-    <div className="flex items-center gap-3">
-      {categories.map((category) => {
+    <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar pb-1">
+      {categories.map((category, index) => {
         const Icon = category.icon;
         const isActive = activeCategory === category.id;
         return (
           <button
             key={category.id}
             onClick={() => onCategoryChange(category.id)}
+            style={{ animationDelay: `${index * 0.05}s` }}
             className={`
-              flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer
+              flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium 
+              transition-all duration-300 cursor-pointer whitespace-nowrap
+              hover:scale-105 active:scale-95
+              animate-fade-in-up
               ${
                 isActive
                   ? theme === "dark"
-                    ? "bg-dark-1 text-primary border border-primary"
-                    : "bg-light-2 text-gray border border-dark-1 hover:border-dark-1"
+                    ? "bg-linear-to-r from-gradient-1/20 to-gradient-2/20 text-white border border-gradient-1 shadow-lg shadow-gradient-1/20"
+                    : "bg-light-2 text-dark border border-gradient-1 shadow-lg shadow-gradient-1/20"
                   : theme === "dark"
-                  ? "bg-dark-1 text-white-75 border border-border hover:border-primary/50"
-                  : "bg-light-2 text-gray border border-light-4 hover:border-dark-1"
+                  ? "bg-dark-3 text-white-75 border border-border hover:border-gradient-1/50 hover:text-white"
+                  : "bg-light-2 text-gray border border-light-4 hover:border-gradient-1/50 hover:text-dark"
               }
             `}
           >
-            <Icon className="w-4.5 h-4.5" />
-            {category.label}
+            <Icon
+              className={`w-4 h-4 sm:w-4.5 sm:h-4.5 ${
+                isActive ? "animate-pulse" : ""
+              }`}
+            />
+            <span className="hidden xs:inline sm:inline">{category.label}</span>
           </button>
         );
       })}
