@@ -4,7 +4,7 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { CONTRACTS } from "../contracts/config";
-import { MARKETPLACE_ABI, NFT_ABI, ERC20_ABI } from "../contracts/abis";
+import { MARKETPLACE_ABI } from "../contracts/abis";
 
 export function useGetListing(listingId: bigint | undefined) {
   return useReadContract({
@@ -14,6 +14,22 @@ export function useGetListing(listingId: bigint | undefined) {
     args: listingId !== undefined ? [listingId] : undefined,
     query: {
       enabled: listingId !== undefined,
+    },
+  });
+}
+
+export function useGetNFTListing(
+  nftContract: `0x${string}` | undefined,
+  tokenId: bigint | undefined
+) {
+  return useReadContract({
+    address: CONTRACTS.MARKETPLACE,
+    abi: MARKETPLACE_ABI,
+    functionName: "getNFTListing",
+    args:
+      nftContract && tokenId !== undefined ? [nftContract, tokenId] : undefined,
+    query: {
+      enabled: !!nftContract && tokenId !== undefined,
     },
   });
 }
@@ -30,101 +46,39 @@ export function useGetPrice(listingId: bigint | undefined) {
   });
 }
 
-export function useNFTMetadata(tokenId: bigint | undefined) {
+export function useGetSellerListings(seller: `0x${string}` | undefined) {
   return useReadContract({
-    address: CONTRACTS.MOCK_NFT,
-    abi: NFT_ABI,
-    functionName: "tokenURI",
-    args: tokenId !== undefined ? [tokenId] : undefined,
+    address: CONTRACTS.MARKETPLACE,
+    abi: MARKETPLACE_ABI,
+    functionName: "getSellerListings",
+    args: seller ? [seller] : undefined,
     query: {
-      enabled: tokenId !== undefined,
+      enabled: !!seller,
     },
   });
 }
 
-export function useIsMarketplaceApproved(owner: `0x${string}` | undefined) {
+export function useMarketplacePaused() {
   return useReadContract({
-    address: CONTRACTS.MOCK_NFT,
-    abi: NFT_ABI,
-    functionName: "isApprovedForAll",
-    args: owner ? [owner, CONTRACTS.MARKETPLACE] : undefined,
-    query: {
-      enabled: !!owner,
-    },
+    address: CONTRACTS.MARKETPLACE,
+    abi: MARKETPLACE_ABI,
+    functionName: "paused",
   });
 }
 
-export function useTokenAllowance(
-  tokenAddress: `0x${string}` | undefined,
-  owner: `0x${string}` | undefined
-) {
+export function useMarketplaceOwner() {
   return useReadContract({
-    address: tokenAddress,
-    abi: ERC20_ABI,
-    functionName: "allowance",
-    args: owner && tokenAddress ? [owner, CONTRACTS.MARKETPLACE] : undefined,
-    query: {
-      enabled: !!owner && !!tokenAddress,
-    },
+    address: CONTRACTS.MARKETPLACE,
+    abi: MARKETPLACE_ABI,
+    functionName: "owner",
   });
-}
-
-export function useApproveMarketplace() {
-  const { writeContract, data: hash, ...rest } = useWriteContract();
-
-  const approve = () => {
-    writeContract({
-      address: CONTRACTS.MOCK_NFT,
-      abi: NFT_ABI,
-      functionName: "setApprovalForAll",
-      args: [CONTRACTS.MARKETPLACE, true],
-    });
-  };
-
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
-
-  return {
-    approve,
-    hash,
-    isConfirming,
-    isConfirmed,
-    ...rest,
-  };
-}
-
-export function useApproveToken(tokenAddress: `0x${string}`) {
-  const { writeContract, data: hash, ...rest } = useWriteContract();
-
-  const approve = (amount: bigint) => {
-    writeContract({
-      address: tokenAddress,
-      abi: ERC20_ABI,
-      functionName: "approve",
-      args: [CONTRACTS.MARKETPLACE, amount],
-    });
-  };
-
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash,
-    });
-
-  return {
-    approve,
-    hash,
-    isConfirming,
-    isConfirmed,
-    ...rest,
-  };
 }
 
 export function useListNFT() {
   const { writeContract, data: hash, ...rest } = useWriteContract();
 
   const listNFT = (
+    nftContract: `0x${string}`,
     tokenId: bigint,
     paymentToken: `0x${string}`,
     price: bigint
@@ -133,7 +87,7 @@ export function useListNFT() {
       address: CONTRACTS.MARKETPLACE,
       abi: MARKETPLACE_ABI,
       functionName: "listNFT",
-      args: [CONTRACTS.MOCK_NFT, tokenId, paymentToken, price],
+      args: [nftContract, tokenId, paymentToken, price],
     });
   };
 
@@ -227,4 +181,84 @@ export function useUpdateListingPrice() {
     isConfirmed,
     ...rest,
   };
+}
+
+export function usePauseMarketplace() {
+  const { writeContract, data: hash, ...rest } = useWriteContract();
+
+  const pause = () => {
+    writeContract({
+      address: CONTRACTS.MARKETPLACE,
+      abi: MARKETPLACE_ABI,
+      functionName: "pause",
+    });
+  };
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
+
+  return {
+    pause,
+    hash,
+    isConfirming,
+    isConfirmed,
+    ...rest,
+  };
+}
+
+export function useUnpauseMarketplace() {
+  const { writeContract, data: hash, ...rest } = useWriteContract();
+
+  const unpause = () => {
+    writeContract({
+      address: CONTRACTS.MARKETPLACE,
+      abi: MARKETPLACE_ABI,
+      functionName: "unpause",
+    });
+  };
+
+  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+    useWaitForTransactionReceipt({
+      hash,
+    });
+
+  return {
+    unpause,
+    hash,
+    isConfirming,
+    isConfirmed,
+    ...rest,
+  };
+}
+
+export function useGetAllMarketNFTs(nftContract: `0x${string}` | undefined) {
+  return useReadContract({
+    address: CONTRACTS.MARKETPLACE,
+    abi: MARKETPLACE_ABI,
+    functionName: "getAllMarketNFTs",
+    args: nftContract ? [nftContract] : undefined,
+    query: {
+      enabled: !!nftContract,
+    },
+  });
+}
+
+export function useGetBatchNFTMarketData(
+  nftContract: `0x${string}` | undefined,
+  tokenIds: bigint[] | undefined
+) {
+  return useReadContract({
+    address: CONTRACTS.MARKETPLACE,
+    abi: MARKETPLACE_ABI,
+    functionName: "getBatchNFTMarketData",
+    args:
+      nftContract && tokenIds && tokenIds.length > 0
+        ? [nftContract, tokenIds]
+        : undefined,
+    query: {
+      enabled: !!nftContract && !!tokenIds && tokenIds.length > 0,
+    },
+  });
 }

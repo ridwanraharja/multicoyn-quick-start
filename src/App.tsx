@@ -11,45 +11,10 @@ import {
 import { MenuIcon, NotificationIcon } from "./components/icons";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { CONTRACTS } from "./contracts/config";
-import {
-  useApproveToken,
-  useBuyNFT,
-  useGetListing,
-  useNFTMetadata,
-  useTokenAllowance,
-} from "./hooks/useNFTMarketplace";
+import { useBuyNFT, useGetAllMarketNFTs } from "./hooks/useMarketplace";
+import { useApproveToken, useTokenAllowance } from "./hooks/useERC20";
 import { formatPrice } from "./utils/format";
 import { decodeMetadataURI, getImageUrl } from "./utils/metadata";
-
-const NFT_TOKEN_IDS = [1n, 2n, 3n, 4n, 5n, 6n, 7n, 8n, 9n, 10n, 11n, 12n];
-
-const TOKEN_TO_LISTING: Record<string, bigint> = {
-  "1": 1n, // Hypurr #14
-  "2": 2n, // Hypurr #17
-  "3": 3n, // Hypurr #22
-  "4": 4n, // Hypurr #3
-  "5": 5n, // Hypurr #35
-  "6": 6n, // Hypurr #37
-  "7": 7n, // Hypurr #46
-  "8": 8n, // Hypurr #5
-  "9": 9n, // Hypurr #61
-  "10": 10n, // Hypurr #63
-  "11": 11n, // Hypurr #7
-  "12": 12n, // Hypurr #8
-};
-
-interface NFTData {
-  id: string;
-  tokenId: bigint;
-  listingId?: bigint;
-  name: string;
-  price: string;
-  priceRaw?: bigint;
-  image: string;
-  paymentToken?: `0x${string}`;
-  seller?: `0x${string}`;
-  active?: boolean;
-}
 
 function Dashboard() {
   const { theme } = useTheme();
@@ -58,65 +23,45 @@ function Dashboard() {
   const [searchValue, setSearchValue] = useState("");
   const [activeCategory, setActiveCategory] = useState("nft");
   const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
-  const [nftData, setNftData] = useState<NFTData[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // Fetch metadata for all NFTs
-  const metadataQueries = NFT_TOKEN_IDS.map((tokenId) =>
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useNFTMetadata(tokenId)
-  );
+  const { data: allMarketNFTs } = useGetAllMarketNFTs(CONTRACTS.MOCK_NFT);
 
-  // Fetch listings for NFTs that are listed
-  const listingQueries = Object.values(TOKEN_TO_LISTING).map((listingId) =>
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useGetListing(listingId)
-  );
+  const nftData = useMemo(() => {
+    if (!allMarketNFTs) return [];
 
-  useEffect(() => {
-    const data: NFTData[] = NFT_TOKEN_IDS.map((tokenId, index) => {
-      const metadataQuery = metadataQueries[index];
-      const uri = metadataQuery.data as string | undefined;
-      const metadata = uri ? decodeMetadataURI(uri) : null;
-
-      const listingId = TOKEN_TO_LISTING[tokenId.toString()];
-      const listingQuery = listingQueries.find((q) =>
-        q.data
-          ? (q.data as { listingId: bigint }).listingId === listingId
-          : false
-      );
-      const listing = listingQuery?.data as
-        | {
-            listingId: bigint;
-            nftContract: `0x${string}`;
-            tokenId: bigint;
-            seller: `0x${string}`;
-            paymentToken: `0x${string}`;
-            price: bigint;
-            active: boolean;
-            listedAt: bigint;
-          }
-        | undefined;
+    return (
+      allMarketNFTs as Array<{
+        tokenId: bigint;
+        tokenURI: string;
+        listingId: bigint;
+        hasListing: boolean;
+        seller: `0x${string}`;
+        paymentToken: `0x${string}`;
+        price: bigint;
+        active: boolean;
+        listedAt: bigint;
+      }>
+    ).map((nft) => {
+      const metadata = nft.tokenURI ? decodeMetadataURI(nft.tokenURI) : null;
 
       return {
-        id: tokenId.toString(),
-        tokenId,
-        listingId,
-        name: metadata?.name || `NFT #${tokenId}`,
+        id: nft.tokenId.toString(),
+        tokenId: nft.tokenId,
+        listingId: nft.hasListing ? nft.listingId : undefined,
+        name: metadata?.name || `NFT #${nft.tokenId}`,
         price:
-          listing?.active && listing.paymentToken
-            ? formatPrice(listing.price, listing.paymentToken)
+          nft.active && nft.paymentToken
+            ? formatPrice(nft.price, nft.paymentToken)
             : "Not Listed",
-        priceRaw: listing?.price,
+        priceRaw: nft.price,
         image: getImageUrl(metadata),
-        paymentToken: listing?.paymentToken,
-        seller: listing?.seller,
-        active: listing?.active,
+        paymentToken: nft.paymentToken || undefined,
+        seller: nft.seller || undefined,
+        active: nft.active,
       };
     });
-
-    setNftData(data);
-  }, [metadataQueries, listingQueries]);
+  }, [allMarketNFTs]);
 
   const selectedNFTData = useMemo(
     () =>
@@ -128,7 +73,11 @@ function Dashboard() {
 
   const { buyNFT, isSuccess: buySuccess } = useBuyNFT();
   const paymentToken = selectedNFTData?.paymentToken;
-  const { data: allowance } = useTokenAllowance(paymentToken, address);
+  const { data: allowance } = useTokenAllowance(
+    paymentToken,
+    address,
+    CONTRACTS.MARKETPLACE
+  );
   const { approve: approveToken } = useApproveToken(
     paymentToken || CONTRACTS.USDT
   );
@@ -141,7 +90,7 @@ function Dashboard() {
 
     if (allowance !== undefined && allowance < selectedNFTData.priceRaw) {
       console.log("Approving token spending...");
-      approveToken(selectedNFTData.priceRaw);
+      approveToken(CONTRACTS.MARKETPLACE, selectedNFTData.priceRaw);
       return;
     }
 
@@ -153,11 +102,13 @@ function Dashboard() {
     console.log("Pay with Multicoyn", selectedNFTData);
   };
 
+  // Close sidebar when purchase is successful
   useEffect(() => {
-    if (buySuccess) {
-      setSelectedNFT(null);
+    if (buySuccess && selectedNFT) {
+      const timer = setTimeout(() => setSelectedNFT(null), 100);
+      return () => clearTimeout(timer);
     }
-  }, [buySuccess]);
+  }, [buySuccess, selectedNFT]);
 
   return (
     <div
