@@ -15,6 +15,7 @@ import { useBuyNFT, useGetAllMarketNFTs } from "./hooks/useMarketplace";
 import { useApproveToken, useTokenAllowance } from "./hooks/useERC20";
 import { formatPrice } from "./utils/format";
 import { decodeMetadataURI, getImageUrl } from "./utils/metadata";
+import HypurrLogo from "./assets/hypur-logo.jpeg";
 
 function Dashboard() {
   const { theme } = useTheme();
@@ -145,13 +146,12 @@ function Dashboard() {
                 <MenuIcon className="w-5 h-5" />
               </button>
               <div className="flex items-center gap-2">
-                <div
-                  className={`
-                    w-8 h-8 rounded-lg flex items-center justify-center
-                    bg-linear-to-br from-gradient-1 to-gradient-2
-                  `}
-                >
-                  <span className="text-white font-bold text-sm">M</span>
+                <div className="w-8 h-8 rounded-xl overflow-hidden animate-pulse-glow hidden sm:block">
+                  <img
+                    src={HypurrLogo}
+                    alt="Market Logo"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h1
                   className={`
@@ -159,7 +159,7 @@ function Dashboard() {
                     ${theme === "dark" ? "text-white" : "text-dark"}
                   `}
                 >
-                  Market
+                  Marketplace
                 </h1>
               </div>
             </div>

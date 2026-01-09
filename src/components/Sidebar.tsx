@@ -1,5 +1,6 @@
 import { useTheme } from "../context/ThemeContext";
 import { CloseIcon, DiscoverIcon, MoonIcon, SunIcon } from "./icons";
+import HypurrLogo from "../assets/hypur-logo.jpeg";
 
 interface NavItem {
   id: string;
@@ -53,15 +54,13 @@ export function Sidebar({
         {/* Header with Logo */}
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Animated Logo */}
-            <div
-              className={`
-              w-10 h-10 rounded-xl flex items-center justify-center
-              bg-linear-to-br from-gradient-1 to-gradient-2
-              animate-pulse-glow
-            `}
-            >
-              <span className="text-white font-bold text-lg">M</span>
+            {/* Logo Image */}
+            <div className="w-10 h-10 rounded-xl overflow-hidden animate-pulse-glow">
+              <img
+                src={HypurrLogo}
+                alt="Market Logo"
+                className="w-full h-full object-cover"
+              />
             </div>
             <h1
               className={`
@@ -69,7 +68,7 @@ export function Sidebar({
                 ${theme === "dark" ? "text-white" : "text-dark"}
               `}
             >
-              Market
+              Marketplace
             </h1>
           </div>
 
