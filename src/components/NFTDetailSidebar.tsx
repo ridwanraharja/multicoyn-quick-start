@@ -1,12 +1,20 @@
 import { useAccount } from "wagmi";
+import { encodeFunctionData } from "viem";
 import { useTheme } from "../context/ThemeContext";
 import { CloseIcon, MetamaskIcon, MulticoynIcon } from "./icons";
+import { MulticoynButton } from "multicoyn-sdk";
+import { MARKETPLACE_ABI } from "../contracts/abis";
+import { CONTRACTS } from "../contracts/config";
 
 interface NFTData {
   id: string;
   name: string;
   price: string;
+  priceRaw?: bigint;
   image: string;
+  paymentToken?: `0x${string}`;
+  seller?: `0x${string}`;
+  listingId?: bigint;
 }
 
 interface NFTDetailSidebarProps {
@@ -23,9 +31,19 @@ export function NFTDetailSidebar({
   onPayWithMulticoyn,
 }: NFTDetailSidebarProps) {
   const { theme } = useTheme();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
 
   if (!nft) return null;
+
+  // Encode buyNFTFor call for PaymentRouter integration
+  const callData =
+    nft.listingId !== undefined && address
+      ? encodeFunctionData({
+          abi: MARKETPLACE_ABI,
+          functionName: "buyNFTFor",
+          args: [nft.listingId, address],
+        })
+      : undefined;
 
   return (
     <>
@@ -219,22 +237,41 @@ export function NFTDetailSidebar({
                 Pay with Metamask
               </button>
 
-              <button
-                onClick={onPayWithMulticoyn}
-                className="
-                  w-full cursor-pointer flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl font-medium 
-                  transition-all duration-300
-                  bg-linear-to-r from-gradient-1 to-gradient-2 
-                  hover:opacity-90 text-white
-                  hover:scale-[1.02] active:scale-[0.98]
-                  hover:shadow-lg hover:shadow-gradient-2/30
-                  animate-fade-in-up animate-gradient-shift
-                "
-                style={{ animationDelay: "0.5s" }}
-              >
-                <MulticoynIcon className="w-6 h-6" />
-                Pay with Multicoyn
-              </button>
+              {nft.seller && nft.priceRaw !== undefined && (
+                <MulticoynButton
+                  totalAmount={Number(nft.priceRaw) / 1e6}
+                  merchantAddress={nft.seller}
+                  currency="USD"
+                  items={[
+                    {
+                      name: nft.name,
+                      price: Number(nft.priceRaw) / 1e6,
+                    },
+                  ]}
+                  settleInIDR={false}
+                  target={callData ? CONTRACTS.MARKETPLACE : undefined}
+                  callData={callData}
+                  onPaymentComplete={(result) => {
+                    console.log("Payment successful:", result);
+                    onPayWithMulticoyn?.();
+                  }}
+                  onPaymentError={(error) => {
+                    console.error("Payment failed:", error);
+                  }}
+                  className="
+                    w-full cursor-pointer flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl font-medium
+                    transition-all duration-300
+                    bg-linear-to-r from-gradient-1 to-gradient-2
+                    hover:opacity-90 text-white
+                    hover:scale-[1.02] active:scale-[0.98]
+                    hover:shadow-lg hover:shadow-gradient-2/30
+                    animate-fade-in-up animate-gradient-shift
+                  "
+                >
+                  <MulticoynIcon className="w-6 h-6" />
+                  Pay with Multicoyn
+                </MulticoynButton>
+              )}
             </>
           )}
         </div>

@@ -242,6 +242,24 @@ export const MARKETPLACE_ABI = [
         name: "listingId",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "recipient",
+        type: "address",
+      },
+    ],
+    name: "buyNFTFor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "listingId",
+        type: "uint256",
+      },
     ],
     name: "cancelListing",
     outputs: [],

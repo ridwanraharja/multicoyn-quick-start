@@ -101,6 +101,10 @@ function Dashboard() {
 
   const handlePayWithMulticoyn = () => {
     console.log("Pay with Multicoyn", selectedNFTData);
+    // This will be called after Multicoyn payment is complete
+    // if (selectedNFTData?.listingId) {
+    //   buyNFT(selectedNFTData.listingId);
+    // }
   };
 
   // Close sidebar when purchase is successful
