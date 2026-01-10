@@ -1,6 +1,5 @@
 import { useTheme } from "../context/ThemeContext";
 import { CloseIcon, DiscoverIcon, MoonIcon, SunIcon } from "./icons";
-import HypurrLogo from "../assets/hypur-logo.jpeg";
 
 interface NavItem {
   id: string;
@@ -54,13 +53,15 @@ export function Sidebar({
         {/* Header with Logo */}
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {/* Logo Image */}
-            <div className="w-10 h-10 rounded-xl overflow-hidden animate-pulse-glow">
-              <img
-                src={HypurrLogo}
-                alt="Market Logo"
-                className="w-full h-full object-cover"
-              />
+            {/* Animated Logo */}
+            <div
+              className={`
+              w-10 h-10 rounded-xl flex items-center justify-center
+              bg-linear-to-br from-gradient-1 to-gradient-2
+              animate-pulse-glow
+            `}
+            >
+              <span className="text-white font-bold text-lg">M</span>
             </div>
             <h1
               className={`
@@ -107,12 +108,12 @@ export function Sidebar({
                       if (window.innerWidth < 1024) onClose?.();
                     }}
                     className={`
-                      w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium 
-                      transition-all duration-200 cursor-pointer
-                      hover:scale-[1.02] active:scale-[0.98]
+                      w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.98]
                       ${
                         isActive
-                          ? "bg-linear-to-r from-gradient-1/20 to-gradient-2/20 text-white border border-gradient-1/30"
+                          ? theme === "dark"
+                            ? "bg-linear-to-r from-gradient-1/20 to-gradient-2/20 text-white border border-gradient-1/30"
+                            : "bg-linear-to-r from-gradient-1/20 to-gradient-2/20 text-dark border border-gradient-1/30"
                           : theme === "dark"
                           ? "text-white-75 hover:bg-dark-3 hover:text-white"
                           : "text-gray hover:bg-light-3 hover:text-dark"
@@ -120,9 +121,7 @@ export function Sidebar({
                     `}
                   >
                     <Icon
-                      className={`w-5 h-5 ${
-                        isActive ? "animate-pulse-glow" : ""
-                      }`}
+                      className={`w-5 h-5 ${isActive ? "text-gradient-1" : ""}`}
                     />
                     {item.label}
                     {isActive && (

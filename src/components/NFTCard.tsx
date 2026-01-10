@@ -27,7 +27,9 @@ export function NFTCard({
         hover-lift group
         ${
           isSelected
-            ? "ring-2 ring-gradient-1 ring-offset-2 ring-offset-dark-1 scale-[1.02]"
+            ? theme === "dark"
+              ? "ring-2 ring-gradient-1 ring-offset-2 ring-offset-dark-1 scale-[1.02]"
+              : "ring-2 ring-gradient-1 ring-offset-2 ring-offset-light-1 scale-[1.02]"
             : ""
         }
         ${
@@ -63,7 +65,7 @@ export function NFTCard({
             ${
               theme === "dark"
                 ? "text-white group-hover:text-gradient-1"
-                : "text-dark"
+                : "text-dark group-hover:text-gradient-1"
             }
           `}
         >
