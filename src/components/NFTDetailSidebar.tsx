@@ -211,7 +211,7 @@ export function NFTDetailSidebar({
                   `}
                 >
                   <span className="w-2 h-2 rounded-full bg-cyan animate-pulse" />
-                  Ethereum
+                  Lisk
                 </span>
               </div>
             </div>
