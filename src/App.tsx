@@ -27,7 +27,9 @@ function Dashboard() {
   const [selectedNFT, setSelectedNFT] = useState<string | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const { data: allMarketNFTs } = useGetAllMarketNFTs(CONTRACTS.MOCK_NFT);
+  const { data: allMarketNFTs, refetch: refetchNFTs } = useGetAllMarketNFTs(
+    CONTRACTS.MOCK_NFT
+  );
 
   const nftData = useMemo(() => {
     if (!allMarketNFTs) return [];
@@ -104,19 +106,18 @@ function Dashboard() {
 
   const handlePayWithMulticoyn = () => {
     toast.success(`Payment completed for ${selectedNFTData?.name}`);
-    // This will be called after Multicoyn payment is complete
-    // if (selectedNFTData?.listingId) {
-    //   buyNFT(selectedNFTData.listingId);
-    // }
+    refetchNFTs();
+    const timer = setTimeout(() => setSelectedNFT(null), 100);
+    return () => clearTimeout(timer);
   };
 
-  // Close sidebar when purchase is successful
   useEffect(() => {
     if (buySuccess && selectedNFT) {
+      refetchNFTs();
       const timer = setTimeout(() => setSelectedNFT(null), 100);
       return () => clearTimeout(timer);
     }
-  }, [buySuccess, selectedNFT]);
+  }, [buySuccess, selectedNFT, refetchNFTs]);
 
   return (
     <div

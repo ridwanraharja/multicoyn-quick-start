@@ -234,15 +234,19 @@ export function useUnpauseMarketplace() {
 }
 
 export function useGetAllMarketNFTs(nftContract: `0x${string}` | undefined) {
-  return useReadContract({
+  const result = useReadContract({
     address: CONTRACTS.MARKETPLACE,
     abi: MARKETPLACE_ABI,
     functionName: "getAllMarketNFTs",
     args: nftContract ? [nftContract] : undefined,
     query: {
       enabled: !!nftContract,
+      gcTime: 0,
+      staleTime: 0,
     },
   });
+
+  return result;
 }
 
 export function useGetBatchNFTMarketData(
