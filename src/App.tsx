@@ -44,25 +44,27 @@ function Dashboard() {
         active: boolean;
         listedAt: bigint;
       }>
-    ).map((nft) => {
-      const metadata = nft.tokenURI ? decodeMetadataURI(nft.tokenURI) : null;
+    )
+      .filter((nft) => nft.active)
+      .map((nft) => {
+        const metadata = nft.tokenURI ? decodeMetadataURI(nft.tokenURI) : null;
 
-      return {
-        id: nft.tokenId.toString(),
-        tokenId: nft.tokenId,
-        listingId: nft.hasListing ? nft.listingId : undefined,
-        name: metadata?.name || `NFT #${nft.tokenId}`,
-        price:
-          nft.active && nft.paymentToken
-            ? formatPrice(nft.price, nft.paymentToken)
-            : "Not Listed",
-        priceRaw: nft.price,
-        image: getImageUrl(metadata),
-        paymentToken: nft.paymentToken || undefined,
-        seller: nft.seller || undefined,
-        active: nft.active,
-      };
-    });
+        return {
+          id: nft.tokenId.toString(),
+          tokenId: nft.tokenId,
+          listingId: nft.hasListing ? nft.listingId : undefined,
+          name: metadata?.name || `NFT #${nft.tokenId}`,
+          price:
+            nft.active && nft.paymentToken
+              ? formatPrice(nft.price, nft.paymentToken)
+              : "Not Listed",
+          priceRaw: nft.price,
+          image: getImageUrl(metadata),
+          paymentToken: nft.paymentToken || undefined,
+          seller: nft.seller || undefined,
+          active: nft.active,
+        };
+      });
   }, [allMarketNFTs]);
 
   const selectedNFTData = useMemo(
