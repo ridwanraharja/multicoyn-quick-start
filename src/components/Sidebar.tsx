@@ -1,5 +1,6 @@
 import { useTheme } from "../context/ThemeContext";
 import { CloseIcon, DiscoverIcon, MoonIcon, SunIcon } from "./icons";
+import { FaucetButton } from "./FaucetButton";
 
 interface NavItem {
   id: string;
@@ -134,16 +135,20 @@ export function Sidebar({
           </ul>
         </nav>
 
-        {/* Theme Toggle */}
+        {/* Faucet and Theme Toggle */}
         <div
-          className={`p-4 border-t ${
+          className={`p-4 space-y-2 border-t ${
             theme === "dark" ? "border-border" : "border-light-4"
           }`}
         >
+          <div className="w-full">
+            <FaucetButton />
+          </div>
+
           <button
             onClick={toggleTheme}
             className={`
-              w-full cursor-pointer flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium 
+              w-full cursor-pointer flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium
               transition-all duration-300
               hover:scale-[1.02] active:scale-[0.98]
               group
