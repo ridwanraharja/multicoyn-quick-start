@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { useAccount } from "wagmi";
+import HypurrLogo from "./assets/hypur-logo.jpeg";
 import {
   CategoryTabs,
   CustomConnectButton,
@@ -11,11 +13,10 @@ import {
 import { MenuIcon, NotificationIcon } from "./components/icons";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { CONTRACTS } from "./contracts/config";
-import { useBuyNFT, useGetAllMarketNFTs } from "./hooks/useMarketplace";
 import { useApproveToken, useTokenAllowance } from "./hooks/useERC20";
+import { useBuyNFT, useGetAllMarketNFTs } from "./hooks/useMarketplace";
 import { formatPrice } from "./utils/format";
 import { decodeMetadataURI, getImageUrl } from "./utils/metadata";
-import HypurrLogo from "./assets/hypur-logo.jpeg";
 
 function Dashboard() {
   const { theme } = useTheme();
@@ -85,22 +86,22 @@ function Dashboard() {
 
   const handlePayWithMetamask = async () => {
     if (!selectedNFTData?.listingId || !selectedNFTData.priceRaw) {
-      console.error("No listing data");
+      toast.error("No listing data available");
       return;
     }
 
     if (allowance !== undefined && allowance < selectedNFTData.priceRaw) {
-      console.log("Approving token spending...");
+      toast.loading("Approving token spending...", { id: "approve" });
       approveToken(CONTRACTS.MARKETPLACE, selectedNFTData.priceRaw);
       return;
     }
 
-    console.log("Buying NFT with Metamask", selectedNFTData);
+    toast.loading("Processing purchase...", { id: "buy" });
     buyNFT(selectedNFTData.listingId);
   };
 
   const handlePayWithMulticoyn = () => {
-    console.log("Pay with Multicoyn", selectedNFTData);
+    toast.success(`Payment completed for ${selectedNFTData?.name}`);
     // This will be called after Multicoyn payment is complete
     // if (selectedNFTData?.listingId) {
     //   buyNFT(selectedNFTData.listingId);
@@ -234,6 +235,30 @@ function Dashboard() {
 function App() {
   return (
     <ThemeProvider>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#1e2136",
+            color: "#fff",
+            borderRadius: "12px",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+          },
+          success: {
+            iconTheme: {
+              primary: "#0d9488",
+              secondary: "#fff",
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: "#ef4444",
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
       <Dashboard />
     </ThemeProvider>
   );

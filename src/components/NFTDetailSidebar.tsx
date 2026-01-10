@@ -1,10 +1,11 @@
-import { useAccount } from "wagmi";
-import { encodeFunctionData } from "viem";
-import { useTheme } from "../context/ThemeContext";
-import { CloseIcon, MetamaskIcon, MulticoynIcon } from "./icons";
 import { MulticoynButton } from "multicoyn-sdk";
+import toast from "react-hot-toast";
+import { encodeFunctionData } from "viem";
+import { useAccount } from "wagmi";
+import { useTheme } from "../context/ThemeContext";
 import { MARKETPLACE_ABI } from "../contracts/abis";
 import { CONTRACTS } from "../contracts/config";
+import { CloseIcon, MetamaskIcon, MulticoynIcon } from "./icons";
 
 interface NFTData {
   id: string;
@@ -257,11 +258,16 @@ export function NFTDetailSidebar({
                     callData: callData,
                   }}
                   onPaymentComplete={(result) => {
-                    console.log("Payment successful:", result);
+                    toast.success(
+                      `Payment successful! TX: ${result.transactionId?.slice(
+                        0,
+                        10
+                      )}...`
+                    );
                     onPayWithMulticoyn?.();
                   }}
                   onPaymentError={(error) => {
-                    console.error("Payment failed:", error);
+                    toast.error(`Payment failed: ${error.message}`);
                   }}
                   className="
                     w-full cursor-pointer flex items-center justify-center gap-3 px-4 py-3.5 rounded-xl font-medium

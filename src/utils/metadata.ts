@@ -22,8 +22,7 @@ export function decodeMetadataURI(uri: string): NFTMetadata | null {
     }
 
     return JSON.parse(uri) as NFTMetadata;
-  } catch (error) {
-    console.error("Failed to decode metadata URI:", error);
+  } catch {
     return null;
   }
 }
