@@ -45,6 +45,11 @@ export function NFTDetailSidebar({
         })
       : undefined;
 
+  const isIDRX =
+    nft.paymentToken?.toLowerCase() === CONTRACTS.IDRX.toLowerCase();
+  const currency = isIDRX ? "IDR" : "USD";
+  const decimals = isIDRX ? 18 : 6;
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -239,18 +244,18 @@ export function NFTDetailSidebar({
 
               {nft.seller && nft.priceRaw !== undefined && (
                 <MulticoynButton
-                  totalAmount={Number(nft.priceRaw) / 1e6}
                   merchantAddress={nft.seller}
-                  currency="USD"
                   items={[
                     {
                       name: nft.name,
-                      price: Number(nft.priceRaw) / 1e6,
+                      price: Number(nft.priceRaw) / Math.pow(10, decimals),
                     },
                   ]}
-                  settleInIDR={false}
-                  target={callData ? CONTRACTS.MARKETPLACE : undefined}
-                  callData={callData}
+                  config={{
+                    currency: currency,
+                    target: callData ? CONTRACTS.MARKETPLACE : undefined,
+                    callData: callData,
+                  }}
                   onPaymentComplete={(result) => {
                     console.log("Payment successful:", result);
                     onPayWithMulticoyn?.();
